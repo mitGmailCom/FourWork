@@ -24,7 +24,6 @@ namespace DZ4
 
         private void colorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
