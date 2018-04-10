@@ -31,7 +31,10 @@ namespace Explorer_WorkTwo_
         ImageList myImListSmall;
         ImageList myImListVerySmall;
         string LinkToImgFolder { get; set; } = null; // ключ к изображению папки
-        private bool FlagCopy { get; set; } = false;
+        private bool FlagCopy { get; set; } = false; //
+        bool flagInMasDisk = false; // флаг для формирования пути к объекту(если не диск, то добавляется '\' между диском и остальным адресом)
+        enum checkImageList { large, small, verySmall};
+        string FlagImgList { get; set; } = null;
 
         public Explorer()
         {
@@ -52,6 +55,7 @@ namespace Explorer_WorkTwo_
             myImListLarge.ImageSize = new Size(32, 32);
             myImListSmall.ImageSize = new Size(16, 16);
             myImListVerySmall.ImageSize = new Size(12, 12);
+            
             myImListLarge.ColorDepth = ColorDepth.Depth32Bit;
             myImListSmall.ColorDepth = ColorDepth.Depth32Bit;
             myImListVerySmall.ColorDepth = ColorDepth.Depth32Bit;
@@ -68,12 +72,27 @@ namespace Explorer_WorkTwo_
                 {
                     listbDisk.Items.Add(item);
                     driveInfo.Add(item);
-                    //ListFolderView.Add(item.ToString());
+                    ListFolderView.Add(item.ToString());
                 }
             }
             showItemsListBox();
-
         }
+
+
+
+
+        private void InvalidateImgList(object sender, EventArgs e)
+        {
+            if (FlagImgList == checkImageList.large.ToString())
+                крупныеЗначкиToolStripMenuItem_Click(sender, e);
+            if (FlagImgList == checkImageList.small.ToString())
+                мелкиеЗначкиToolStripMenuItem_Click(sender, e);
+            if (FlagImgList == checkImageList.verySmall.ToString())
+                списокToolStripMenuItem_Click(sender, e);
+        }
+
+
+
 
         #region ListBox-listDisk
 
@@ -83,24 +102,38 @@ namespace Explorer_WorkTwo_
             for (int i = 0; i < listbDisk.Items.Count; i++)
             {
                 listbDisk.Text = listbDisk.Items[i].ToString();
-                //textBox1.Text = listbDisk.Items[i].ToString();
             }
-            textBox1.Text = listbDisk.SelectedItem.ToString();
         }
 
 
 
         // добавление в Items
-        private void ShowFolder(string path, int ind)
+        private void ShowFolder(string path, int ind, object sender, EventArgs e)
         {
             textBox1.Text = path;
             int n = 1;
+            int inMass = 0;
+          
+
             foreach (string dirs in Directory.GetDirectories(path))
             {
-                if (dirs.Contains(path))
+                foreach (var item in ListFolderView)
+                {
+                    string temp2 = dirs.Trim();
+                    string temp = item.Trim();
+                    if (temp == temp2)
+                    {
+                        inMass = 1;
+                        break;
+                    }
+                }
+            }
+            if (inMass == 0)
+            {
+                foreach (string dirs in Directory.GetDirectories(path))
                 {
                     listbDisk.Items.Insert((ind + n), "   " + dirs);
-                    //ListFolderView.Insert((ind + n), "   " + dirs);
+                    ListFolderView.Insert((ind + n), "   " + dirs);
                 }
             }
         }
@@ -115,11 +148,12 @@ namespace Explorer_WorkTwo_
 
 
 
-        #region Lisbox-listView
+        #region listView
 
         // добавление файлов в Items(listbView)
-        private void ShowFilesInView(string path, int ind)
+        private void ShowFilesInView(string path, int ind, object sender, EventArgs e)
         {
+
             AddDiskToListBoxView = false;
             foreach (string files in Directory.GetFiles(path))
             {
@@ -133,8 +167,10 @@ namespace Explorer_WorkTwo_
                 }
                 if (AddDiskToListBoxView == true)
                 {
-                    myImListLarge.Images.Add(files, (Icon)Icon.ExtractAssociatedIcon(files));
-                    myImListSmall.Images.Add(files, (Icon)Icon.ExtractAssociatedIcon(files));
+                    Icon LargeIcon = SystemIcons.WinLogo;
+                    LargeIcon = Icon.ExtractAssociatedIcon(files);
+                    myImListLarge.Images.Add(files, LargeIcon);
+                    myImListSmall.Images.Add(files, Icon.ExtractAssociatedIcon(files));
                     myImListVerySmall.Images.Add(files, (Icon)Icon.ExtractAssociatedIcon(files));
                     listView1.Items.Add(files.Substring(path.Length), files);
                 }
@@ -164,12 +200,10 @@ namespace Explorer_WorkTwo_
                 }
                 if (AddDiskToListBoxView == true)
                 {
-                    //myImList.Images.Add(dirs, (Icon)Icon.ExtractAssociatedIcon(dirs));
                     listView1.Items.Add(dirs.Substring(path.Length), LinkToImgFolder);
                 }
                 if (AddDiskToListBoxView == false)
                 {
-                    //myImList.Images.Add(dirs, (Icon)Icon.ExtractAssociatedIcon(dirs));
                     listView1.Items.Add(dirs.Substring(path.Length + 1), LinkToImgFolder);
                 }
             }
@@ -177,9 +211,9 @@ namespace Explorer_WorkTwo_
 
 
         // вывод в текстБокс listbView
-        private void showItemsListView()
+        private void showItemsListView(object sender, EventArgs e)
         {
-
+            InvalidateImgList(sender, e);
             for (int i = 0; i < listView1.Items.Count; i++)
             {
                 listView1.Text = listView1.Items[i].ToString();
@@ -193,8 +227,8 @@ namespace Explorer_WorkTwo_
         {
             SelectIt = listbDisk.SelectedItem.ToString();
             selectInd = listbDisk.SelectedIndex;
-            listbDisk.Text = "";
-            ShowFolder(SelectIt, selectInd); // добавление в колекцию для дерева дисков
+            listbDisk.Text = null;
+            ShowFolder(SelectIt, selectInd, sender, e); // добавление в колекцию для дерева дисков
             showItemsListBox(); // вывод в дереве дисков
 
 
@@ -206,10 +240,9 @@ namespace Explorer_WorkTwo_
              Debug.Assert(flagInList != true);
              if (flagInList != true)
                 {
-
                     ShowDirectorysInView(SelectIt, selectInd);
-                    ShowFilesInView(SelectIt, selectInd);
-                    showItemsListView();
+                    ShowFilesInView(SelectIt, selectInd, sender, e);
+                    showItemsListView(sender, e);
                     textBox1.Text = SelectIt;
                 }
             }
@@ -218,142 +251,7 @@ namespace Explorer_WorkTwo_
 
 
 
-
-
-
-        private void toolStripBtnCopy_Click(object sender, EventArgs e)
-        {
-            if (listView1.SelectedItems.Count == 0)
-                return;
-
-            if (listView1.SelectedItems.Count == 1)
-            {
-                PathCopyFile = textBox1.Text + listView1.SelectedItems[0].Text;
-                CopyFile = listView1.SelectedItems[0].Text;
-
-                var checkedItems = new ListViewItem[listView1.SelectedItems.Count];
-                listView1.SelectedItems.CopyTo(checkedItems, 0);
-
-                Clipboard.SetDataObject(checkedItems, false);
-                FlagCopy = true;
-            }
-        }
-
-
-        private void toolStripBtnCut_Click(object sender, EventArgs e)
-        {
-            if (listView1.SelectedItems.Count == 0)
-                return;
-
-            if (listView1.SelectedItems.Count == 1)
-            {
-                PathCopyFile = textBox1.Text + listView1.SelectedItems[0].Text;
-                CopyFile = listView1.SelectedItems[0].Text;
-
-                var checkedItems = new ListViewItem[listView1.SelectedItems.Count];
-                listView1.SelectedItems.CopyTo(checkedItems, 0);
-
-                Clipboard.SetDataObject(checkedItems, false);
-                FlagCopy = false;
-            }
-        }
-
-
-        private void toolStripBtnPaste_Click(object sender, EventArgs e)
-        {
-            var checkedItems = Clipboard.GetDataObject().GetData(typeof(ListViewItem[])) as ListViewItem[];
-
-            if (checkedItems == null)
-                return;
-
-            listView1.Items.AddRange(checkedItems);
-
-            if (FlagCopy == true)
-                File.Copy(PathCopyFile, textBox1.Text + "\\" + CopyFile);
-            if (FlagCopy == false)
-                File.Move(PathCopyFile, textBox1.Text + "\\" + CopyFile);
-            FlagCopy = false;
-        }
-
-
-
-
-
-       
-
-        #region ChangeIcon
-
-        private void toolStripBtnLargeIc_Click(object sender, EventArgs e)
-        {
-            listView1.View = System.Windows.Forms.View.LargeIcon;
-            listView1.Invalidate();
-        }
-
-        private void toolStripBtnSmallIc_Click(object sender, EventArgs e)
-        {
-            listView1.View = System.Windows.Forms.View.SmallIcon;
-            listView1.Invalidate();
-        }
-
-        private void toolStripBtnList_Click(object sender, EventArgs e)
-        {
-            listView1.View = System.Windows.Forms.View.List;
-            listView1.Invalidate();
-        }
-
-        private void toolStripBtnTable_Click(object sender, EventArgs e)
-        {
-            listView1.View = System.Windows.Forms.View.Details;
-            listView1.Invalidate();
-        }
-
-
-        #endregion
-
-        #region ChangeView
-
-        private void toolStripBtnFont_Click(object sender, EventArgs e)
-        {
-            FontDialog font = new FontDialog();
-
-            if (font.ShowDialog() == DialogResult.OK)
-                listView1.Font = font.Font;
-        }
-
-        private void toolStripBtnColorFont_Click(object sender, EventArgs e)
-        {
-            ColorDialog color = new ColorDialog();
-
-            if (color.ShowDialog() == DialogResult.OK)
-                listView1.ForeColor = color.Color;
-        }
-
-        private void toolStripBtnBackColor_Click(object sender, EventArgs e)
-        {
-            ColorDialog backColor = new ColorDialog();
-
-            if (backColor.ShowDialog() == DialogResult.OK)
-                listView1.BackColor = backColor.Color;
-        }
-
-        #endregion
-
-
-
-        private void копироватьToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            toolStripBtnCopy_Click(sender, e);
-        }
-
-
-
-
         #region HotKeys
-
-        private void tabControl1_KeyDown(object sender, KeyEventArgs e)
-        {
-            listView1_KeyDown(sender, e);
-        }
 
         private void listView1_KeyDown(object sender, KeyEventArgs e)
         {
@@ -368,21 +266,26 @@ namespace Explorer_WorkTwo_
                 {
                     if (e.KeyValue == 67)
                     {
-                        //toolStripBtnCopy_Click(sender, e);
                         CtrlcToolStripMenuItemCopy_Click(sender, e);
                     }
-                    if (e.KeyValue == 90)
+                    if (e.KeyValue == 88)
                         CtrlzToolStripMenuItemCut_Click(sender, e);
-                        //toolStripBtnCut_Click(sender, e);
-
+                    if (e.KeyValue == 46)
+                        удалитьDelToolStripMenuItem_Click(sender, e);
                 }
             }
+
             if (listView1.SelectedItems.Count == 0)
             {
                 if (e.KeyValue == 86)
-                    CtrlzToolStripMenuItemCut_Click(sender, e);
-                    //toolStripBtnPaste_Click(sender, e);
+                    CtrlvToolStripMenuItemPaste_Click(sender, e);
+                
             }
+        }
+
+        private void tabControl1_KeyDown(object sender, KeyEventArgs e)
+        {
+            listView1_KeyDown(sender, e);
         }
 
         private void Explorer_KeyDown(object sender, KeyEventArgs e)
@@ -400,6 +303,18 @@ namespace Explorer_WorkTwo_
 
         #region Edit
 
+        private void CheckFlagInMasDisk(string fP)
+        {
+            foreach (var item in driveInfo)
+            {
+                if (item.ToString() == fP + "\\")
+                {
+                    flagInMasDisk = true;
+                    break;
+                }
+            }
+        }
+
         private void CtrlcToolStripMenuItemCopy_Click(object sender, EventArgs e)
         {
             if (listView1.SelectedItems.Count == 0)
@@ -407,7 +322,10 @@ namespace Explorer_WorkTwo_
 
             if (listView1.SelectedItems.Count == 1)
             {
-                PathCopyFile = textBox1.Text + listView1.SelectedItems[0].Text;
+                if (flagInMasDisk == false)
+                    PathCopyFile = textBox1.Text + "\\" + listView1.SelectedItems[0].Text;
+                if (flagInMasDisk == true)
+                    PathCopyFile = textBox1.Text + listView1.SelectedItems[0].Text;
                 CopyFile = listView1.SelectedItems[0].Text;
 
                 var checkedItems = new ListViewItem[listView1.SelectedItems.Count];
@@ -425,7 +343,11 @@ namespace Explorer_WorkTwo_
 
             if (listView1.SelectedItems.Count == 1)
             {
-                PathCopyFile = textBox1.Text + listView1.SelectedItems[0].Text;
+                CheckFlagInMasDisk(textBox1.Text);
+                if (flagInMasDisk == false)
+                    PathCopyFile = textBox1.Text + "\\" + listView1.SelectedItems[0].Text;
+                if (flagInMasDisk == true)
+                    PathCopyFile = textBox1.Text + listView1.SelectedItems[0].Text;
                 CopyFile = listView1.SelectedItems[0].Text;
 
                 var checkedItems = new ListViewItem[listView1.SelectedItems.Count];
@@ -435,9 +357,11 @@ namespace Explorer_WorkTwo_
                 FlagCopy = false;
             }
         }
+       
 
         private void CtrlvToolStripMenuItemPaste_Click(object sender, EventArgs e)
         {
+            
             var checkedItems = Clipboard.GetDataObject().GetData(typeof(ListViewItem[])) as ListViewItem[];
 
             if (checkedItems == null)
@@ -449,8 +373,21 @@ namespace Explorer_WorkTwo_
                 File.Copy(PathCopyFile, textBox1.Text + "\\" + CopyFile);
             if (FlagCopy == false)
                 File.Move(PathCopyFile, textBox1.Text + "\\" + CopyFile);
+                
             FlagCopy = false;
         }
+
+        private void удалитьDelToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (listView1.SelectedItems.Count == 1)
+            {
+                string tempIt = listView1.SelectedItems[0].Text.ToString();
+                listView1.Items.Remove(listView1.SelectedItems[0]);
+                tempIt = textBox1.Text + "\\" + tempIt;
+                File.Delete(tempIt);
+            }
+        }
+
 
         private void toolStripBtnCreateFolder_Click(object sender, EventArgs e)
         {
@@ -488,24 +425,26 @@ namespace Explorer_WorkTwo_
         }
         #endregion
 
-
         #region ChangeIcon
 
         private void крупныеЗначкиToolStripMenuItem_Click(object sender, EventArgs e)
         {
             listView1.View = System.Windows.Forms.View.LargeIcon;
+            FlagImgList = Enum.GetName(typeof(checkImageList),checkImageList.large);
             listView1.Invalidate();
         }
 
         private void мелкиеЗначкиToolStripMenuItem_Click(object sender, EventArgs e)
         {
             listView1.View = System.Windows.Forms.View.SmallIcon;
+            FlagImgList = Enum.GetName(typeof(checkImageList), checkImageList.small);
             listView1.Invalidate();
         }
 
         private void списокToolStripMenuItem_Click(object sender, EventArgs e)
         {
             listView1.View = System.Windows.Forms.View.List;
+            FlagImgList = Enum.GetName(typeof(checkImageList), checkImageList.verySmall);
             listView1.Invalidate();
         }
 
@@ -514,8 +453,10 @@ namespace Explorer_WorkTwo_
             int n = 0;
             string[] masDirectory = Directory.GetDirectories(textBox1.Text);
             List<string> masFiles = new List<string>();
+
             foreach (var file in Directory.GetFiles(textBox1.Text))
                 masFiles.Add(file);
+
             listView1.View = System.Windows.Forms.View.Details;
             listView1.Columns.Add("Имя");
             listView1.Columns.Add("Дата изменения");
@@ -551,6 +492,6 @@ namespace Explorer_WorkTwo_
             listView1.Invalidate();
         }
         #endregion
+       
     }
-
 }
