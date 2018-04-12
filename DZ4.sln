@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DZ4", "DZ4\DZ4.csproj", "{D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Explorer(WorkTwo)", "Explorer(WorkTwo)\Explorer(WorkTwo).csproj", "{54686FFD-D06E-4D96-8237-2787912112AA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Project Create Menu", "Project Create Menu\Project Create Menu.csproj", "{8D9BA466-0994-4069-9A42-D536D418CB18}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{54686FFD-D06E-4D96-8237-2787912112AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{54686FFD-D06E-4D96-8237-2787912112AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{54686FFD-D06E-4D96-8237-2787912112AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D9BA466-0994-4069-9A42-D536D418CB18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D9BA466-0994-4069-9A42-D536D418CB18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D9BA466-0994-4069-9A42-D536D418CB18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D9BA466-0994-4069-9A42-D536D418CB18}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
