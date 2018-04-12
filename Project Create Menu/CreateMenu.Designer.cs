@@ -36,6 +36,7 @@
             this.btnAddSubItem = new System.Windows.Forms.Button();
             this.grbAddTopLevelMenu = new System.Windows.Forms.GroupBox();
             this.grbAddSubItem = new System.Windows.Forms.GroupBox();
+            this.lblHelp = new System.Windows.Forms.Label();
             this.grbAddTopLevelMenu.SuspendLayout();
             this.grbAddSubItem.SuspendLayout();
             this.SuspendLayout();
@@ -90,6 +91,7 @@
             this.btnAddSubItem.TabIndex = 5;
             this.btnAddSubItem.Text = "AddSubItem";
             this.btnAddSubItem.UseVisualStyleBackColor = true;
+            this.btnAddSubItem.Click += new System.EventHandler(this.btnAddSubItem_Click);
             // 
             // grbAddTopLevelMenu
             // 
@@ -115,11 +117,22 @@
             this.grbAddSubItem.TabStop = false;
             this.grbAddSubItem.Text = "AddSubItem";
             // 
+            // lblHelp
+            // 
+            this.lblHelp.AutoSize = true;
+            this.lblHelp.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.35F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lblHelp.Location = new System.Drawing.Point(9, 185);
+            this.lblHelp.Name = "lblHelp";
+            this.lblHelp.Size = new System.Drawing.Size(330, 12);
+            this.lblHelp.TabIndex = 8;
+            this.lblHelp.Text = "Наберите значение в AddTopLevelMenu, в которое хотите добавить SubItem";
+            // 
             // FormCreateMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(354, 201);
+            this.ClientSize = new System.Drawing.Size(346, 201);
+            this.Controls.Add(this.lblHelp);
             this.Controls.Add(this.grbAddSubItem);
             this.Controls.Add(this.grbAddTopLevelMenu);
             this.Name = "FormCreateMenu";
@@ -130,6 +143,7 @@
             this.grbAddSubItem.ResumeLayout(false);
             this.grbAddSubItem.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -143,6 +157,7 @@
         private System.Windows.Forms.Button btnAddSubItem;
         private System.Windows.Forms.GroupBox grbAddTopLevelMenu;
         private System.Windows.Forms.GroupBox grbAddSubItem;
+        private System.Windows.Forms.Label lblHelp;
     }
 }
 
