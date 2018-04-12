@@ -124,6 +124,7 @@
             this.Controls.Add(this.grbAddTopLevelMenu);
             this.Name = "FormCreateMenu";
             this.Text = "Create Menu";
+            this.Load += new System.EventHandler(this.FormCreateMenu_Load);
             this.grbAddTopLevelMenu.ResumeLayout(false);
             this.grbAddTopLevelMenu.PerformLayout();
             this.grbAddSubItem.ResumeLayout(false);

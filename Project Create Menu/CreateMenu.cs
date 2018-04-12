@@ -12,6 +12,7 @@ namespace Project_Create_Menu
 {
     public partial class FormCreateMenu : Form
     {
+        MenuStrip menu;
         public FormCreateMenu()
         {
             InitializeComponent();
@@ -20,6 +21,11 @@ namespace Project_Create_Menu
 
 
         private void btnAddTopLevelMenu_Click(object sender, EventArgs e)
+        {
+            menu = new MenuStrip();
+        }
+
+        private void FormCreateMenu_Load(object sender, EventArgs e)
         {
 
         }
