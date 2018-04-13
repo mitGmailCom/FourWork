@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace Explorer_withListView_TreeView_RichBox_
 {
-    public partial class Form1 : Form
+    public partial class formExplorerTreeview : Form
     {
-        public Form1()
+        public formExplorerTreeview()
         {
             InitializeComponent();
         }

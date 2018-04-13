@@ -16,7 +16,7 @@ namespace Explorer_withListView_TreeView_RichBox_
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Application.Run(new formExplorerTreeview());
         }
     }
 }
