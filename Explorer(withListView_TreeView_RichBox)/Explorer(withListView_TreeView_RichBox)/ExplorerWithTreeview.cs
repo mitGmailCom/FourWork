@@ -36,6 +36,14 @@ namespace Explorer_withListView_TreeView_RichBox_
         // zagruzit metod (diski);
         private void formExplorerTreeview_Load(object sender, EventArgs e)
         {
+            //textBox1.Text = $"Name - {temDir.Name}\nCreationTime - {temDir.CreationTime}\nLastAccessTime - {temDir.LastAccessTime}\nLastWriteTime - {temDir.LastWriteTime}\nAttributes - {temDir.Attributes}\nCountDirectories - {countDirectories}\nCountFiles - {countFiles}";
+            label7.Text = "Name";
+            label1.Text = "CreationTime";
+            label2.Text = "LastAccessTime";
+            label3.Text = "LastWriteTime";
+            label4.Text = "Attributes";
+            label5.Text = "CountDirectories";
+            label6.Text = "CountFiles";
             this.richTxbExpl.AllowDrop = true;
             this.richTxbExpl.DragEnter += RichTxbExpl_DragEnter;
             this.richTxbExpl.DragDrop += RichTxbExpl_DragDrop;
@@ -145,38 +153,7 @@ namespace Explorer_withListView_TreeView_RichBox_
         private void IfSelectedMyComp(TreeViewEventArgs e, bool flagIfDisk)
         {
             richTxbExpl.Text = "My Computer";
-            txbPath.Text = e.Node.FullPath.Substring(root.FullPath.Length);
-            flagIfDisk = IsDisk(e);
-            if (flagIfDisk == false)
-            {
-                foreach (var item in Directory.GetDirectories(e.Node.FullPath.Substring(root.FullPath.Length)))
-                {
-                    DirectoryInfo dir = new DirectoryInfo(item);
-                    listViewExpl.Items.Add(dir.Name);
-                }
-
-                foreach (var item1 in Directory.GetFiles(e.Node.FullPath.Substring(root.FullPath.Length)))
-                {
-                    DirectoryInfo dir = new DirectoryInfo(item1);
-                    listViewExpl.Items.Add(dir.Name);
-                }
-            }
-            else if (flagIfDisk == true)
-            {
-                foreach (var item in Directory.GetDirectories(e.Node.FullPath.Substring(root.FullPath.Length) + "\\"))
-                {
-                    DirectoryInfo dir = new DirectoryInfo(item);
-                    listViewExpl.Items.Add(dir.Name);
-                }
-
-                foreach (var item1 in Directory.GetFiles(e.Node.FullPath.Substring(root.FullPath.Length) + "\\"))
-                {
-                    DirectoryInfo dir = new DirectoryInfo(item1);
-                    listViewExpl.Items.Add(dir.Name);
-                }
-            }
         }
-
 
 
         private void IfNotSelectedMyComp(TreeViewEventArgs e, bool flagIfDisk)
@@ -187,7 +164,6 @@ namespace Explorer_withListView_TreeView_RichBox_
             else if (FlagLargeImgList == false)
                 SmallImgList(e, flagIfDisk);
         }
-
 
 
 
@@ -232,9 +208,6 @@ namespace Explorer_withListView_TreeView_RichBox_
 
             else if (flagIfDisk == true)
             {
-               
-                Icon iconForFile = SystemIcons.WinLogo;
-
                 foreach (var item in Directory.GetDirectories(e.Node.FullPath.Substring(root.FullPath.Length + 1) + "\\"))
                 {
                     DirectoryInfo dir = new DirectoryInfo(item);
@@ -250,7 +223,6 @@ namespace Explorer_withListView_TreeView_RichBox_
                 tempE = new TreeViewEventArgs(e.Node);
             }
         }
-
 
 
         private void SmallImgList(TreeViewEventArgs e, bool flagIfDisk)
@@ -305,7 +277,6 @@ namespace Explorer_withListView_TreeView_RichBox_
                 tempE = new TreeViewEventArgs(e.Node);
             }
         }
-
 
 
         private void stateImgList(TreeViewEventArgs e, bool flagIfDisk)
@@ -364,7 +335,6 @@ namespace Explorer_withListView_TreeView_RichBox_
 
 
 
-
         private void listToolStripMenuItem_Click(object sender, EventArgs e)
         {
             listViewExpl.BeginUpdate();
@@ -378,7 +348,62 @@ namespace Explorer_withListView_TreeView_RichBox_
 
         private void tableToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            listViewExpl.Columns.Clear();
+            string[] masDirectory = Directory.GetDirectories(txbPath.Text+"\\");
+            List<string> masFiles = new List<string>();
 
+            foreach (var file in Directory.GetFiles(txbPath.Text+"\\"))
+                masFiles.Add(file);
+
+            listViewExpl.View = System.Windows.Forms.View.Details;
+            listViewExpl.Columns.Add("Имя");
+            listViewExpl.Columns.Add("Дата изменения");
+            listViewExpl.Columns.Add("Тип");
+            listViewExpl.Columns.Add("Размер");
+
+            for (int i = 0; i < listViewExpl.Columns.Count; i++)
+            {
+                if (i == 2)
+                {
+                    listViewExpl.Columns[i].Width = 48;
+                    continue;
+                }
+                listViewExpl.Columns[i].Width = 80;
+            }
+
+            listViewExpl.BeginUpdate();
+            FlagLargeImgList = false;
+            listViewExpl.View = View.Details;
+            listViewExpl.SmallImageList = smallIcon;
+
+            listViewExpl.EndUpdate();
+            ShowDetails(masDirectory, masFiles);
+        }
+
+        private void ShowDetails(string[] masDirectory, List<string> masFiles)
+        {
+            int n = 0;
+            foreach (ListViewItem item in listViewExpl.Items)
+            {
+                if (item.Index < masDirectory.Length)
+                {
+                    item.SubItems.Add($"{ Directory.GetLastWriteTime(item.Text)}");
+                    item.SubItems.Add("Папка");
+                    item.SubItems.Add("");
+                    string tt = item.Text;
+                    int t = item.Index;
+                }
+
+
+                if (item.Index >= masDirectory.Length)
+                {
+                    FileInfo fInfo = new FileInfo(masFiles[n]);
+                    item.SubItems.Add($"{File.GetLastWriteTime(masFiles[n])}");
+                    item.SubItems.Add($"{fInfo.Extension}");
+                    item.SubItems.Add($"{fInfo.Length} b");
+                    n++;
+                }
+            }
         }
 
         private void largeIconToolStripMenuItem_Click(object sender, EventArgs e)
@@ -403,6 +428,9 @@ namespace Explorer_withListView_TreeView_RichBox_
             SmallImgList(tempE, flagIfDisk);
         }
 
+
+
+
         private void titleToolStripMenuItem_Click(object sender, EventArgs e)
         {
             listViewExpl.BeginUpdate();
@@ -413,8 +441,6 @@ namespace Explorer_withListView_TreeView_RichBox_
             listViewExpl.Items.Clear();
             stateImgList(tempE, flagIfDisk);
         }
-
-
 
 
         private void listViewExpl_SelectedIndexChanged(object sender, EventArgs e)
@@ -449,14 +475,18 @@ namespace Explorer_withListView_TreeView_RichBox_
                         if (p.IndexOf('.') != -1)
                             countFiles = 0;
 
-                        richTxbExpl.Text = $"Name - {temDir.Name}\nCreationTime - {temDir.CreationTime}\nLastAccessTime - {temDir.LastAccessTime}\nLastWriteTime - {temDir.LastWriteTime}\nAttributes - {temDir.Attributes}\nCountDirectories - {countDirectories}\nCountFiles - {countFiles}";
+                        label8.Text = temDir.Name;
+                        label9.Text = temDir.CreationTime.ToString();
+                        label10.Text = temDir.LastAccessTime.ToString();
+                        label11.Text = temDir.LastWriteTime.ToString();
+                        label12.Text = temDir.Attributes.ToString();
+                        label13.Text = countDirectories.ToString();
+                        label14.Text = countFiles.ToString();
                     }
                     catch { }
                 }
             }
         }
-
-
 
 
         private void listViewExpl_MouseDown(object sender, MouseEventArgs e)
@@ -466,19 +496,14 @@ namespace Explorer_withListView_TreeView_RichBox_
             {
                 try
                 {
-                    string p = txbPath.Text + "\\" + tempListIt.Text;//temDir.Name;
+                    string p = txbPath.Text + "\\" + tempListIt.Text;
                     // esli file
                     if (p.IndexOf('.') != -1)
-                    {
-                        FileInfo tempFileInf = new FileInfo(p);
                         listViewExpl.DoDragDrop(p, DragDropEffects.Move);
-                    }
                 }
                 catch { }
             }
         }
-
-
 
 
         private void RichTxbExpl_DragEnter(object sender, DragEventArgs e)
@@ -490,28 +515,16 @@ namespace Explorer_withListView_TreeView_RichBox_
         }
 
 
-
         private void RichTxbExpl_DragDrop(object sender, DragEventArgs e)
         {
-            richTxbExpl.Text = (e.Data.GetData(DataFormats.Text).ToString());
+            try
+            {
+                using (StreamReader sr = new StreamReader(e.Data.GetData(DataFormats.Text).ToString(), Encoding.Default))
+                {
+                    richTxbExpl.Text = sr.ReadToEnd();
+                }
+            }
+            catch { }
         }
-
-        //private void ReloadImgList()
-        //{
-        //    //listViewExpl.LargeImageList = null;
-        //    //listViewExpl.SmallImageList = null;
-
-        //    //Bitmap bmp = new Bitmap("Generic_36503.png");
-        //    //largeIcon = new ImageList();
-        //    //largeIcon.ImageSize = new Size(32, 32);
-        //    //largeIcon.ColorDepth = ColorDepth.Depth32Bit;
-        //    smallIcon = new ImageList();
-        //    smallIcon.ImageSize = new Size(16, 16);
-        //    smallIcon.ColorDepth = ColorDepth.Depth32Bit;
-
-        //    //largeIcon.Images.Add(ImgKeyFolder, bmp);
-        //    //smallIcon.Images.Add(ImgKeyFolder, bmp);
-        //}
-
     }
 }
