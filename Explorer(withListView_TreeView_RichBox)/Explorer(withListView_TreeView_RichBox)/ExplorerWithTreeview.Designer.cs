@@ -44,6 +44,7 @@
             this.listViewExpl = new System.Windows.Forms.ListView();
             this.richTxbExpl = new System.Windows.Forms.RichTextBox();
             this.imageList1Large = new System.Windows.Forms.ImageList(this.components);
+            this.titleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -89,7 +90,8 @@
             this.largeIconToolStripMenuItem,
             this.smallIconToolStripMenuItem1,
             this.listToolStripMenuItem,
-            this.tableToolStripMenuItem});
+            this.tableToolStripMenuItem,
+            this.titleToolStripMenuItem});
             this.showIconToolStripMenuItem.Name = "showIconToolStripMenuItem";
             this.showIconToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.showIconToolStripMenuItem.Text = "ShowIcon";
@@ -149,6 +151,8 @@
             this.listViewExpl.Size = new System.Drawing.Size(250, 315);
             this.listViewExpl.TabIndex = 3;
             this.listViewExpl.UseCompatibleStateImageBehavior = false;
+            this.listViewExpl.SelectedIndexChanged += new System.EventHandler(this.listViewExpl_SelectedIndexChanged);
+            this.listViewExpl.MouseDown += new System.Windows.Forms.MouseEventHandler(this.listViewExpl_MouseDown);
             // 
             // richTxbExpl
             // 
@@ -166,6 +170,13 @@
             this.imageList1Large.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1Large.ImageStream")));
             this.imageList1Large.TransparentColor = System.Drawing.Color.Transparent;
             this.imageList1Large.Images.SetKeyName(0, "bltinmic.ico");
+            // 
+            // titleToolStripMenuItem
+            // 
+            this.titleToolStripMenuItem.Name = "titleToolStripMenuItem";
+            this.titleToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.titleToolStripMenuItem.Text = "Title";
+            this.titleToolStripMenuItem.Click += new System.EventHandler(this.titleToolStripMenuItem_Click);
             // 
             // formExplorerTreeview
             // 
@@ -204,6 +215,7 @@
         private System.Windows.Forms.ToolStripMenuItem listToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem tableToolStripMenuItem;
         private System.Windows.Forms.ImageList imageList1Large;
+        private System.Windows.Forms.ToolStripMenuItem titleToolStripMenuItem;
     }
 }
 
