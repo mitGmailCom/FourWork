@@ -31,8 +31,7 @@ namespace Explorer_withListView_TreeView_RichBox_
             InitializeComponent();
         }
 
-        // sozdat "myComp"
-        // zagruzit "myComp"
+        // sozdat "myComp", zagruzit "myComp"
         // zagruzit metod (diski);
         private void formExplorerTreeview_Load(object sender, EventArgs e)
         {
