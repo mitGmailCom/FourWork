@@ -31,8 +31,7 @@ namespace Explorer_withListView_TreeView_RichBox_
             InitializeComponent();
         }
 
-        // sozdat "myComp", zagruzit "myComp"
-        // zagruzit metod (diski);
+        // sozdat "myComp", zagruzit "myComp", zagruzit metod (diski);
         private void formExplorerTreeview_Load(object sender, EventArgs e)
         {
             //textBox1.Text = $"Name - {temDir.Name}\nCreationTime - {temDir.CreationTime}\nLastAccessTime - {temDir.LastAccessTime}\nLastWriteTime - {temDir.LastWriteTime}\nAttributes - {temDir.Attributes}\nCountDirectories - {countDirectories}\nCountFiles - {countFiles}";
