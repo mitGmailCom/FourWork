@@ -34,7 +34,7 @@ namespace Explorer_WorkTwo_
         private bool FlagCopy { get; set; } = false; //
         bool flagInMasDisk = false; // флаг для формирования пути к объекту(если не диск, то добавляется '\' между диском и остальным адресом)
         enum checkImageList { large, small, verySmall};
-        string FlagImgList { get; set; } = null;
+        string FlagImgList { get; set; } = null; // flag dlya ImgList
 
         public Explorer()
         {
